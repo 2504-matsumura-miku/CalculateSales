@@ -65,10 +65,17 @@ public class CalculateSales {
 			br = new BufferedReader(fr);
 
 			String line;
-			// 一行ずつ読み込む
+			// branch.lstを一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
-				System.out.println(line);
+
+				//支店コードと支店名をそれぞれ別に保持する為、文字列を分割する(処理内容1-2)
+				String[] items = line.split(",");
+
+				// 処理内容：Map（branchNames、branchSales）に格納(処理内容1-2)
+				branchNames.put(items[0], items[1]);
+				// この時点では集計前の為、売上金額は0で固定
+				branchSales.put(items[0], 0L);
 			}
 
 		} catch(IOException e) {
