@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CalculateSales {
@@ -41,11 +43,13 @@ public class CalculateSales {
 		//指定したパスに存在する全てのファイル(または、ディレクトリ)の情報を格納（処理内容2-1）
 		File[] files = new File("C:\\Users\\trainee1348\\Desktop\\売上集計課題").listFiles();
 
+		List<File> rcdFiles = new ArrayList<>();
+
 		//for文で配列から該当のファイルを探す（処理内容2-1）
 		for(int i = 0; i < files.length ; i++) {
 			//files[i].getName() でファイル名を獲得し、8桁かつ.rcdのファイル名のみ値を保持（処理内容2-1）
-			if (files[i].getName() .matches("^\d{8}$" + ".+rcd$") ) {
-
+			if (files[i].getName() .matches("^\\d{8}$" + ".+rcd$") ) {
+				rcdFiles.add(files[i]);
 			}
 		}
 
