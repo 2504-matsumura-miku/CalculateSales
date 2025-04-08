@@ -38,6 +38,17 @@ public class CalculateSales {
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
 
+		//指定したパスに存在する全てのファイル(または、ディレクトリ)の情報を格納（処理内容2-1）
+		File[] files = new File("C:\\Users\\trainee1348\\Desktop\\売上集計課題").listFiles();
+
+		//for文で配列から該当のファイルを探す（処理内容2-1）
+		for(int i = 0; i < files.length ; i++) {
+			//files[i].getName() でファイル名を獲得し、8桁かつ.rcdのファイル名のみ値を保持（処理内容2-1）
+			if (files[i].getName() .matches("^\d{8}$" + ".+rcd$") ) {
+
+			}
+		}
+
 
 
 		// 支店別集計ファイル書き込み処理
