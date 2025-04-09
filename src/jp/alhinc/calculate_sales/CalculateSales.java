@@ -45,13 +45,15 @@ public class CalculateSales {
 
 		List<File> rcdFiles = new ArrayList<>();
 
-		//for文で配列から該当のファイルを探す（処理内容2-1）
+		//フォルダの格納物から売上ファイルを探す（処理内容2-1）
 		for(int i = 0; i < files.length ; i++) {
-			//files[i].getName() でファイル名を獲得し、8桁かつ.rcdのファイル名のみ値を保持（処理内容2-1）
-			if (files[i].getName() .matches("^\\d{8}$" + ".+rcd$") ) {
+			//files[i].getName() でファイル名を獲得し、8桁かつ.rcdのファイルを保持（処理内容2-1）
+			if (files[i].getName() .matches("^\\d{8}.rcd$") ) {
 				rcdFiles.add(files[i]);
 			}
 		}
+
+		// rcdFilesからファイルの情報を取得（処理内容2-2）
 
 
 
