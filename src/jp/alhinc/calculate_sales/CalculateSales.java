@@ -53,8 +53,53 @@ public class CalculateSales {
 			}
 		}
 
-		// rcdFilesからファイルの情報を取得（処理内容2-2）
+		// rcdFilesから売上ファイルの情報を取得（処理内容2-2）
+		for (int i = 0; i < rcdFiles.size(); i++) {
+			////(処理内容2-2)
+			BufferedReader br = null;
 
+			try {
+				File file = rcdFiles.get(i);
+				FileReader fr = new FileReader(file);
+				br = new BufferedReader(fr);
+
+				String line;
+				List<String> rcdFiles_sub = new ArrayList<>();
+
+				// 売上ファイルを一行ずつ読み込む
+				while((line = br.readLine()) != null) {
+
+					// 1行ずつ格納
+					rcdFiles_sub.add(line);
+
+				}
+				// Mapに加算していく為、売上金額の型を変換
+				long fileSale = Long.parseLong(rcdFiles_sub.get(1));
+
+				// 支店コードごとに売上金額を加算
+				Long saleAmount = branchSales.get(rcdFiles_sub.get(0)) + fileSale;
+
+				//加算した売上⾦額をMapに追加
+				branchSales.put(rcdFiles_sub.get(0), saleAmount);
+
+
+			} catch(IOException e) {
+				System.out.println(UNKNOWN_ERROR);
+				return;
+			} finally {
+				// ファイルを開いている場合
+				if(br != null) {
+					try {
+						// ファイルを閉じる
+						br.close();
+					} catch(IOException e) {
+						System.out.println(UNKNOWN_ERROR);
+						return;
+					}
+				}
+			}
+			////(処理内容2-2)
+		}
 
 
 		// 支店別集計ファイル書き込み処理
