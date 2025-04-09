@@ -1,8 +1,10 @@
 package jp.alhinc.calculate_sales;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ public class CalculateSales {
 
 		// rcdFilesから売上ファイルの情報を取得（処理内容2-2）
 		for (int i = 0; i < rcdFiles.size(); i++) {
-			////(処理内容2-2)
+			////(処理内容2-2 ↓)
 			BufferedReader br = null;
 
 			try {
@@ -79,9 +81,8 @@ public class CalculateSales {
 				// 支店コードごとに売上金額を加算
 				Long saleAmount = branchSales.get(rcdFiles_sub.get(0)) + fileSale;
 
-				//加算した売上⾦額をMapに追加
+				//加算した売上金額をMapに追加
 				branchSales.put(rcdFiles_sub.get(0), saleAmount);
-
 
 			} catch(IOException e) {
 				System.out.println(UNKNOWN_ERROR);
@@ -98,7 +99,7 @@ public class CalculateSales {
 					}
 				}
 			}
-			////(処理内容2-2)
+			////(処理内容2-2 ↑)
 		}
 
 
@@ -169,6 +170,34 @@ public class CalculateSales {
 	 */
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
+
+		BufferedWriter bw = null;
+
+		try {
+			File file = new File(path,fileName);
+			FileWriter fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+
+			for () {
+
+			}
+
+		} catch(IOException e) {
+			System.out.println(UNKNOWN_ERROR);
+			return false;
+		} finally {
+			// ファイルを開いている場合
+			if(br != null) {
+				try {
+					// ファイルを閉じる
+					br.close();
+				} catch(IOException e) {
+					System.out.println(UNKNOWN_ERROR);
+					return false;
+				}
+			}
+		}
+
 
 		return true;
 	}
