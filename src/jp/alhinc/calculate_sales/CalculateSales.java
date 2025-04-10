@@ -174,12 +174,15 @@ public class CalculateSales {
 		BufferedWriter bw = null;
 
 		try {
-			File file = new File(path,fileName);
+			File file = new File(path,"branch.out");
 			FileWriter fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
 
-			for () {
-
+			// MapからKey(支店コード)を取得
+			for (String key : branchNames.keySet()) {
+				// keyとkeyに対応するvalueをファイルに書き込む
+				bw.write(key + "," + branchNames.get(key) + "," + branchSales.get(key));
+				bw.newLine();
 			}
 
 		} catch(IOException e) {
@@ -187,10 +190,10 @@ public class CalculateSales {
 			return false;
 		} finally {
 			// ファイルを開いている場合
-			if(br != null) {
+			if(bw != null) {
 				try {
 					// ファイルを閉じる
-					br.close();
+					bw.close();
 				} catch(IOException e) {
 					System.out.println(UNKNOWN_ERROR);
 					return false;
