@@ -142,8 +142,9 @@ public class CalculateSales {
 				branchSales.put(items[0], 0L);
 
 				// 支店定義ファイルの仕様が異なる場合はエラー
-				if ((items.length != 2) || (!items[0].matches("^\\d{3}[.]rcd$"))) {
+				if ((items.length != 2) || (!items[0].matches("^\\d{3}"))) {
 					System.out.println(FILE_INVALID_FORMAT);
+					return false;
 				}
 			}
 		} catch (IOException e) {
