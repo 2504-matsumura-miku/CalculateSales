@@ -16,6 +16,8 @@ public class CalculateSales {
 
 	// 支店定義ファイル名
 	private static final String FILE_NAME_BRANCH_LST = "branch.lst";
+	// 商品定義ファイル名
+	private static final String FILE_NAME_COMMODITY_LST = "commodity.lst";
 
 	// 支店別集計ファイル名
 	private static final String FILE_NAME_BRANCH_OUT = "branch.out";
@@ -39,6 +41,10 @@ public class CalculateSales {
 		Map<String, String> branchNames = new HashMap<>();
 		// 支店コードと売上金額を保持するMap
 		Map<String, Long> branchSales = new HashMap<>();
+		// 商品コードと商品名を保持するMap
+		Map<String, String> commoditInfos = new HashMap<>();
+//      商品コードと売上額を保持するMap
+		Map<String, String> commoditSales = new HashMap<>();
 
 		// コマンドライン引数が1つ設定されているか
 		if (args.length != 1) {
@@ -46,12 +52,15 @@ public class CalculateSales {
 			return;
 		}
 
-		// 支店定義ファイル読み込み処理
+		// 支店定義ファイルの読み込み処理
 		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales)) {
 			return;
 		}
 
-		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
+		// 商品定義ファイルの読み込み処理
+		if (!readFile(args[0],FILE_NAME_COMMODITY_LST, commoditInfos)) {
+			return;
+		}
 
 		// 指定したパスに存在する全てのファイル(または、ディレクトリ)の情報を格納（処理内容2-1）
 		File[] files = new File(args[0]).listFiles();
@@ -175,11 +184,12 @@ public class CalculateSales {
 				return false;
 			}
 
+			// 支店定義ファイル
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 			String line;
 
-			// branch.lstを一行ずつ読み込む(処理内容1-2)
+			// 定義ファイルを一行ずつ読み込む(処理内容1-2)
 			while ((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 
@@ -197,6 +207,27 @@ public class CalculateSales {
 					return false;
 				}
 			}
+
+			// 商品ファイルを一行ずつ読み込む
+			while ((line = br.readLine()) != null) {
+				// ※ここの読み込み処理を変更してください。
+
+				//支店コードと支店名をそれぞれ別に保持する為、文字列を分割する
+				String[] items = line.split(",");
+
+				// 処理内容：Map（branchNames、branchSales）に格納
+				branchNames.put(items[0], items[1]);
+				// この時点では集計前の為、売上金額は0で固定
+				branchSales.put(items[0], 0L);
+
+				// 支店定義ファイルの仕様が異なる場合はエラー
+				if ((items.length != 2) || (!items[0].matches("^[0-9]{3}+$"))) {
+					System.out.println(FILE_INVALID_FORMAT);
+					return false;
+				}
+			}
+
+
 		} catch (IOException e) {
 			System.out.println(UNKNOWN_ERROR);
 			return false;
@@ -214,6 +245,85 @@ public class CalculateSales {
 		}
 		return true;
 	}
+
+	/**
+	 * 商品定義ファイル読み込み処理
+	 *
+	 * @param フォルダパス
+	 * @param ファイル名
+	 * @param 商品コードと商品名を保持するMap
+	 * @param 商品コードと売上額を保持するMap
+	 * @return 読み込み可否
+	 */
+	private static boolean readFile(String path,String fileName, Map<String,String>commoditInfos) {
+		BufferedReader br = null;
+		BufferedReader c_br = null;
+
+		try {
+			File file = new File(path, fileName);
+
+			// 商品定義ファイル
+			FileReader fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			String line;
+
+			// 定義ファイルを一行ずつ読み込む(処理内容1-2)
+			while ((line = br.readLine()) != null) {
+				// ※ここの読み込み処理を変更してください。(処理内容1-2)
+
+				//支店コードと支店名をそれぞれ別に保持する為、文字列を分割する(処理内容1-2)
+				String[] items = line.split(",");
+
+				// 処理内容：Map（branchNames、branchSales）に格納(処理内容1-2)
+				branchNames.put(items[0], items[1]);
+				// この時点では集計前の為、売上金額は0で固定(処理内容1-2)
+				branchSales.put(items[0], 0L);
+
+				// 支店定義ファイルの仕様が異なる場合はエラー
+				if ((items.length != 2) || (!items[0].matches("^[0-9]{3}+$"))) {
+					System.out.println(FILE_INVALID_FORMAT);
+					return false;
+				}
+			}
+
+			// 商品ファイルを一行ずつ読み込む
+			while ((line = br.readLine()) != null) {
+				// ※ここの読み込み処理を変更してください。
+
+				//支店コードと支店名をそれぞれ別に保持する為、文字列を分割する
+				String[] items = line.split(",");
+
+				// 処理内容：Map（branchNames、branchSales）に格納
+				branchNames.put(items[0], items[1]);
+				// この時点では集計前の為、売上金額は0で固定
+				branchSales.put(items[0], 0L);
+
+				// 支店定義ファイルの仕様が異なる場合はエラー
+				if ((items.length != 2) || (!items[0].matches("^[0-9]{3}+$"))) {
+					System.out.println(FILE_INVALID_FORMAT);
+					return false;
+				}
+			}
+
+
+		} catch (IOException e) {
+			System.out.println(UNKNOWN_ERROR);
+			return false;
+		} finally {
+			// ファイルを開いている場合
+			if (br != null) {
+				try {
+					// ファイルを閉じる
+					br.close();
+				} catch (IOException e) {
+					System.out.println(UNKNOWN_ERROR);
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 
 	/**
 	 * 支店別集計ファイル書き込み処理
