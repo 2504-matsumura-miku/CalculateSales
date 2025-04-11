@@ -59,14 +59,13 @@ public class CalculateSales {
 
 		// フォルダの格納情報から売上ファイルを探す（処理内容2-1）
 		for (int i = 0; i < files.length; i++) {
+			// getName() でファイル名を獲得し、8桁かつ.rcdのファイルのみ保持（処理内容2-1）
+			if (files[i].isFile() && files[i].getName().matches("^\\d{8}[.]rcd$")) {
 
-			// files[i].getName() でファイル名を獲得し、8桁かつ.rcdのファイルを保持（処理内容2-1）
-			if (files[i].getName().matches("^\\d{8}[.]rcd$")) {
 				rcdFiles.add(files[i]);
-
 			}
 		}
-		// 売上ファイルを昇順にそーと
+		// 売上ファイルを昇順にソート
 		Collections.sort(rcdFiles);
 
 		// 売上ファイルが連番か確認
@@ -110,6 +109,12 @@ public class CalculateSales {
 				// 支店コードが存在しない場合はエラー
 				if (!branchNames.containsKey(rcdFilesSub.get(0))) {
 					System.out.println(file.getName() + BRANCH_CODE_ERROR);
+					return;
+				}
+
+				// Map追加前に売上金額が数字か確認する
+				if (!rcdFilesSub.get(1).matches("^[0-9]*$")) {
+					System.out.println(UNKNOWN_ERROR);
 					return;
 				}
 
@@ -163,7 +168,6 @@ public class CalculateSales {
 
 		try {
 			File file = new File(path, fileName);
-			FileReader fr = new FileReader(file);
 
 			// 支店定義ファイルが存在しない場合
 			if (!file.exists()) {
@@ -171,6 +175,7 @@ public class CalculateSales {
 				return false;
 			}
 
+			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 			String line;
 
