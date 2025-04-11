@@ -113,7 +113,7 @@ public class CalculateSales {
 				}
 
 				// Map追加前に売上金額が数字か確認する
-				if (!rcdFilesSub.get(1).matches("^[0-9]*$")) {
+				if (!rcdFilesSub.get(1).matches("^[0-9]+$")) {
 					System.out.println(UNKNOWN_ERROR);
 					return;
 				}
@@ -192,7 +192,7 @@ public class CalculateSales {
 				branchSales.put(items[0], 0L);
 
 				// 支店定義ファイルの仕様が異なる場合はエラー
-				if ((items.length != 2) || (!items[0].matches("^\\d{3}"))) {
+				if ((items.length != 2) || (!items[0].matches("^[0-9]{3}+$"))) {
 					System.out.println(FILE_INVALID_FORMAT);
 					return false;
 				}
