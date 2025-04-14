@@ -40,7 +40,6 @@ public class CalculateSales {
 	private static final String TOTAL_OVER_10DIGIT = "合計金額が10桁を超えました";
 	private static final String BRANCH_CODE_ERROR = "の支店コードが不正です";
 	private static final String COMMODITY_CODE_ERROR = "の商品コードが不正です";
-	private static final String FILE_FORMAT_ERROR = "のフォーマットが不正です";
 
 	/**
 	 * メインメソッド
@@ -93,8 +92,8 @@ public class CalculateSales {
 		// 売上ファイルが連番か確認
 		for (int i = 0; i < rcdFiles.size() - 1; i++) {
 			// 比較する2つのファイル名の先頭から数字の8文字を切り出し、int型に変換
-			int former = Integer.parseInt(((rcdFiles.get(i)).getName()).substring(0, 8));
-			int latter = Integer.parseInt(((rcdFiles.get(i + 1)).getName()).substring(0, 8));
+			int former = Integer.parseInt((rcdFiles.get(i).getName()).substring(0, 8));
+			int latter = Integer.parseInt((rcdFiles.get(i + 1).getName()).substring(0, 8));
 
 			// 2つのファイル名の数字を比較
 			if ((latter - former) != 1) {
@@ -123,7 +122,7 @@ public class CalculateSales {
 
 				// 売上ファイルの中身が3行以外の場合はエラー
 				if (rcdFilesSub.size() != 3) {
-					System.out.println(file.getName() + FILE_FORMAT_ERROR);
+					System.out.println(file.getName() + FILE_INVALID_FORMAT);
 					return;
 				}
 
