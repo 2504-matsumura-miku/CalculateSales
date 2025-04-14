@@ -24,7 +24,11 @@ public class CalculateSales {
 	// 商品別集計ファイル名
 	private static final String FILE_NAME_COMMODITY_OUT = "commodity.out";
 
-	// 定義ファイル
+	// 定義ファイルの正規表現
+	private static final String REGULAR_BRANCH = "^[0-9]{3}+$";
+	private static final String REGULAR_COMMODITY = "^[A-Za-z0-9]{8}+$";
+
+	// 正規表現
 	private static final String FILE_TYPE_BRANCH = "支店定義ファイル";
 	private static final String FILE_TYPE_COMMODITY = "商品定義ファイル";
 
@@ -60,12 +64,14 @@ public class CalculateSales {
 		}
 
 		// 支店定義ファイルの読み込み処理
-		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, FILE_TYPE_BRANCH)) {
+		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, FILE_TYPE_BRANCH,
+				REGULAR_BRANCH)) {
 			return;
 		}
 
 		// 商品定義ファイルの読み込み処理
-		if (!readFile(args[0], FILE_NAME_COMMODITY_LST, commoditNames, commoditSales, FILE_TYPE_COMMODITY)) {
+		if (!readFile(args[0], FILE_NAME_COMMODITY_LST, commoditNames, commoditSales, FILE_TYPE_COMMODITY,
+				REGULAR_COMMODITY)) {
 			return;
 		}
 
@@ -87,8 +93,8 @@ public class CalculateSales {
 		// 売上ファイルが連番か確認
 		for (int i = 0; i < rcdFiles.size() - 1; i++) {
 			// 比較する2つのファイル名の先頭から数字の8文字を切り出し、int型に変換
-			int former = Integer.parseInt((files[i].getName()).substring(0, 8));
-			int latter = Integer.parseInt((files[i + 1]).getName().substring(0, 8));
+			int former = Integer.parseInt(((rcdFiles.get(i)).getName()).substring(0, 8));
+			int latter = Integer.parseInt(((rcdFiles.get(i + 1)).getName()).substring(0, 8));
 
 			// 2つのファイル名の数字を比較
 			if ((latter - former) != 1) {
@@ -191,8 +197,8 @@ public class CalculateSales {
 	 * @param 定義ファイルの種類
 	 * @return 読み込み可否
 	 */
-	private static boolean readFile(String path, String fileName, Map<String, String> Names,
-			Map<String, Long> Sales, String fileType) {
+	private static boolean readFile(String path, String fileName, Map<String, String> names,
+			Map<String, Long> sales, String fileType, String regular) {
 		BufferedReader br = null;
 
 		try {
@@ -214,19 +220,16 @@ public class CalculateSales {
 				String[] items = line.split(",");
 
 				// 要素が「,」で区切られてない場合はエラー
-				if (items.length != 2) {
-					System.out.println(fileType + FILE_INVALID_FORMAT);
-					return false;
-					// 1つ目の要素が数字3桁（支店定義）でもアルファベットと数字8桁（商品定義）でもない場合はエラー
-				} else if (!items[0].matches("^[0-9]{3}+$") && !items[0].matches("^[A-Za-z0-9]{8}+$")) {
+				// 1つ目の要素が「支店定義の場合は数字3桁」、「商品定義の場合はアルファベットと数字8桁」でなければエラー
+				if ((items.length != 2) || (!items[0].matches(regular))) {
 					System.out.println(fileType + FILE_INVALID_FORMAT);
 					return false;
 				}
 
-				// 処理内容：Map（branchNames、branchSales）に格納(処理内容1-2)
-				Names.put(items[0], items[1]);
+				// 処理内容：Mapに格納
+				names.put(items[0], items[1]);
 				// この時点では集計前の為、売上金額は0で固定(処理内容1-2)
-				Sales.put(items[0], 0L);
+				sales.put(items[0], 0L);
 			}
 		} catch (IOException e) {
 			System.out.println(UNKNOWN_ERROR);
@@ -255,8 +258,8 @@ public class CalculateSales {
 	 * @param 支店コードと支店名（商品コードと売上金額）を保持するMap
 	 * @return 書き込み可否
 	 */
-	private static boolean writeFile(String path, String fileName, Map<String, String> Names,
-			Map<String, Long> Sales) {
+	private static boolean writeFile(String path, String fileName, Map<String, String> names,
+			Map<String, Long> sales) {
 
 		BufferedWriter bw = null;
 
@@ -266,9 +269,9 @@ public class CalculateSales {
 			bw = new BufferedWriter(fw);
 
 			// MapからKeyを取得(処理内容3-1)
-			for (String key : Names.keySet()) {
+			for (String key : names.keySet()) {
 				// keyとkeyに対応するvalueをファイルに書き込む(処理内容3-1)
-				bw.write(key + "," + Names.get(key) + "," + Sales.get(key));
+				bw.write(key + "," + names.get(key) + "," + sales.get(key));
 				bw.newLine();
 			}
 		} catch (IOException e) {
